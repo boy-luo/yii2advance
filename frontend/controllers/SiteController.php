@@ -62,6 +62,10 @@ class SiteController extends Controller
                 'class' => 'yii\captcha\CaptchaAction',
                 'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
             ],
+
+//            'upload_more'=>[
+//                'class' => 'common\widgets\batch_upload\UploadAction'
+//            ]
         ];
     }
 
@@ -72,7 +76,25 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
+        // 当前用户的身份实例。未认证用户则为 Null 。
+        $identity = Yii::$app->user->identity;
+        // var_dump($identity);
+
+        // 当前用户的ID。 未认证用户则为 Null 。
+        $id = Yii::$app->user->id;
+        var_dump($id);
+
+        // 判断当前用户是否是游客（未认证的）
+        $isGuest = Yii::$app->user->isGuest;
+        var_dump($isGuest);
+
         return $this->render('index');
+    }
+
+
+    public function actionStudy()
+    {
+        return $this->render('study');
     }
 
     /**

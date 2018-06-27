@@ -66,6 +66,14 @@ return [
                 ],
             ],
         ],
+
+        // 界面主题配置
+        'view' => [
+            'theme' => [
+                'pathMap' => ['@backend/views' => '@backend/themes/blog/views'],
+                'baseUrl' => '@web/themes/blog',
+            ],
+        ],
     ],
     'params' => $params,
 ];
