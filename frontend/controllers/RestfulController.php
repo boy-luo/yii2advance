@@ -14,16 +14,18 @@ use frontend\models\SignupForm;
 use frontend\models\ContactForm;
 
 /**
- * 请求处理（Handling Requests）:
+ * RESTful Web 服务（RESTful Web Services）:
  */
-class Request extends Controller
+class RestfulController extends Controller
 {
+    public $modelClass = 'app\models\User';
+
     /**
      * {@inheritdoc}
      */
     public function behaviors()
     {
-        return [
+        $behaviors = [
             'access' => [
                 'class' => AccessControl::className(),
                 'only' => ['logout', 'signup'],
@@ -47,6 +49,9 @@ class Request extends Controller
                 ],
             ],
         ];
+
+        $behaviors['rateLimiter']['enableRateLimitHeaders'] = true;
+        return $behaviors;
     }
 
     /**
@@ -72,18 +77,8 @@ class Request extends Controller
      */
     public function actionIndex()
     {
-        // $headers 是一个 yii\web\HeaderCollection 对象
-        $headers = Yii::$app->request->headers;
-        var_dump($headers);
 
-        // 返回 Accept header 值
-        $accept = $headers->get('Accept');
-        var_dump($accept);
-
-        if ($headers->has('User-Agent')) { /* 这是一个 User-Agent 头 */ }
-        var_dump($headers->get('User-Agent'));
-
-
+        return 'doing...';
         // return $this->render('study');
     }
 

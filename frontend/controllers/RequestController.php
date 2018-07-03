@@ -14,9 +14,9 @@ use frontend\models\SignupForm;
 use frontend\models\ContactForm;
 
 /**
- * RESTful Web 服务（RESTful Web Services）:
+ * 请求处理（Handling Requests）:
  */
-class Restful extends Controller
+class RequestController extends Controller
 {
     /**
      * {@inheritdoc}
@@ -72,8 +72,18 @@ class Restful extends Controller
      */
     public function actionIndex()
     {
+        // $headers 是一个 yii\web\HeaderCollection 对象
+        $headers = Yii::$app->request->headers;
+        var_dump($headers);
 
-        return 'doing...';
+        // 返回 Accept header 值
+        $accept = $headers->get('Accept');
+        var_dump($accept);
+
+        if ($headers->has('User-Agent')) { /* 这是一个 User-Agent 头 */ }
+        var_dump($headers->get('User-Agent'));
+
+
         // return $this->render('study');
     }
 

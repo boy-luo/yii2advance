@@ -45,20 +45,23 @@ return [
             'rules' => [
             ],
         ],*/
-        'urlManager' => [
-            'enablePrettyUrl' => true,
-            'enableStrictParsing' => true,
-            'showScriptName' => false,
-            'rules' => [
-                [
-                    'class' => 'yii\rest\UrlRule',
-                    'controller' => 'wechat',
-                    'extraPatterns' => [
-                        'GET valid' => 'valid',
-                    ],
-                ],
-            ],
-        ],
+
+        // todo: 这个配置影响正常访问
+        // todo: 这个配置影响正常访问
+//        'urlManager' => [
+//            'enablePrettyUrl' => true,
+//            'enableStrictParsing' => true,
+//            'showScriptName' => false,
+//            'rules' => [
+//                [
+//                    'class' => 'yii\rest\UrlRule',
+//                    'controller' => 'wechat',
+//                    'extraPatterns' => [
+//                        'GET valid' => 'valid',
+//                    ],
+//                ],
+//            ],
+//        ],
 
         'i18n' => [
             'translations' => [
