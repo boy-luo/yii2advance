@@ -12,46 +12,51 @@ use frontend\models\PasswordResetRequestForm;
 use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
 use frontend\models\ContactForm;
+use yii\rest\ActiveController;
 
 /**
  * RESTful Web 服务（RESTful Web Services）:
  */
-class RestfulController extends Controller
+// class RestfulController extends Controller
+class RestfulController extends ActiveController
 {
-    public $modelClass = 'app\models\User';
+    // public $modelClass = 'app\models\User';
+    public $modelClass = 'common\models\User';
 
     /**
      * {@inheritdoc}
      */
     public function behaviors()
     {
-        $behaviors = [
-            'access' => [
-                'class' => AccessControl::className(),
-                'only' => ['logout', 'signup'],
-                'rules' => [
-                    [
-                        'actions' => ['signup'],
-                        'allow' => true,
-                        'roles' => ['?'],
-                    ],
-                    [
-                        'actions' => ['logout'],
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ],
-                ],
-            ],
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'logout' => ['post'],
-                ],
-            ],
-        ];
-
-        $behaviors['rateLimiter']['enableRateLimitHeaders'] = true;
+        $behaviors = parent::behaviors();
+         $behaviors['rateLimiter']['enableRateLimitHeaders'] = true;
         return $behaviors;
+
+        // 注意:  漏桶配置在parent的配置中有class名称 才可以
+//        $behaviors = [
+//            'access' => [
+//                'class' => AccessControl::className(),
+//                'only' => ['logout', 'signup'],
+//                'rules' => [
+//                    [
+//                        'actions' => ['signup'],
+//                        'allow' => true,
+//                        'roles' => ['?'],
+//                    ],
+//                    [
+//                        'actions' => ['logout'],
+//                        'allow' => true,
+//                        'roles' => ['@'],
+//                    ],
+//                ],
+//            ],
+//            'verbs' => [
+//                'class' => VerbFilter::className(),
+//                'actions' => [
+//                    'logout' => ['post'],
+//                ],
+//            ],
+//        ];
     }
 
     /**

@@ -14,3 +14,24 @@ CREATE TABLE `wechat_user` (
 
 ALTER TABLE `wechat_user`
   ADD PRIMARY KEY (`id`);
+
+全面的：
+  CREATE TABLE IF NOT EXISTS `user2` (
+    `id` int(20) unsigned NOT NULL AUTO_INCREMENT,
+    `username` varchar(50) DEFAULT NULL COMMENT '用户名',
+    `password_hash` varchar(80) DEFAULT NULL COMMENT '密码',
+    `password_reset_token` varchar(60) DEFAULT NULL COMMENT '密码token',
+    `email` varchar(60) DEFAULT NULL COMMENT '邮箱',
+    `auth_key` varchar(60) DEFAULT NULL,
+    `status` int(5) DEFAULT NULL COMMENT '状态',
+    `created_at` int(18) DEFAULT NULL COMMENT '创建时间',
+    `updated_at` int(18) DEFAULT NULL COMMENT '更新时间',
+    `password` varchar(50) DEFAULT NULL COMMENT '密码',
+    `role` varchar(50) DEFAULT NULL COMMENT 'role',
+    `access_token` varchar(60) DEFAULT NULL,
+    `allowance` int(20) NOT NULL,
+    `allowance_updated_at` int(20) NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `username` (`username`),
+    UNIQUE KEY `access_token` (`access_token`)
+  ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
