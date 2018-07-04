@@ -20,6 +20,21 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="row">
         <div class="col-lg-5">
 
+            <script src="http://res.wx.qq.com/connect/zh_CN/htmledition/js/wxLogin.js"></script>
+
+            <div id="wx_login"></div>
+
+            <script type="text/javascript">
+                var obj = new WxLogin({
+                    id:"wx_login",
+                    appid: "appid",
+                    scope: "snsapi_login",
+                    redirect_uri: "http%3A%2F%2Fwww.yourhost.com%2Fcallback",
+                    state: "state",
+                    style: "",
+                    href: "https://www.yourhost.com/css/qr-style.css"
+                });
+            </script>
             <?php
             Modal::begin([
                              'id' => 'page-modal',
