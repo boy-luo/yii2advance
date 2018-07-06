@@ -14,6 +14,8 @@ use frontend\models\SignupForm;
 use frontend\models\ContactForm;
 use yii\rest\ActiveController;
 
+//use yii\filters\RateLimiter;
+
 /**
  * RESTful Web 服务（RESTful Web Services）:
  */
@@ -29,7 +31,13 @@ class RestfulController extends ActiveController
     public function behaviors()
     {
         $behaviors = parent::behaviors();
-         $behaviors['rateLimiter']['enableRateLimitHeaders'] = true;
+
+//        $behaviors['rateLimiter'] = [
+//            'class' => RateLimiter::className(),
+//            'enableRateLimitHeaders' => true,
+//        ];
+
+          $behaviors['rateLimiter']['enableRateLimitHeaders'] = true;
         return $behaviors;
 
         // 注意:  漏桶配置在parent的配置中有class名称 才可以

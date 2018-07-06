@@ -14,6 +14,8 @@ use yii\bootstrap\Nav;
 
 $this->title = 'Login';
 $this->params['breadcrumbs'][] = $this->title;
+
+$user = '直接 test';
 ?>
 <div class="site-login">
 
@@ -35,6 +37,41 @@ $this->params['breadcrumbs'][] = $this->title;
                     href: "https://www.yourhost.com/css/qr-style.css"
                 });
             </script>
+
+            <br>
+            <br>
+            <?= Html::tag('p', Html::encode('test tag'), ['class' => 'username']);
+            $options = ['class' => 'btn btn-default'];
+            $type = 1;;
+            if ($type === 'success') {
+                Html::removeCssClass($options, 'btn-default');
+                Html::addCssClass($options, 'btn-success');
+            }
+
+            echo Html::tag('div', 'Pwede na', $options);
+
+            ?>
+
+            <?= Html::style('.danger { color: #f00; }') ?>
+
+            Gives you
+
+            <style>.danger { color: #f00; }</style>
+
+
+            <?= Html::script('alert("Hello!");', ['defer' => true]);?>
+
+Gives you
+
+<script defer>alert("Hello!");</script>
+
+
+            <?= Html::label('User name', 'username', ['class' => 'label username']) ?>
+<!--            --><?//= Html::activeLabel($user, 'username', ['class' => 'label username']) ?>
+
+            <br>
+            <br>
+            <br>
             <?php
             Modal::begin([
                              'id' => 'page-modal',

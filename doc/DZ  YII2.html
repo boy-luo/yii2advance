@@ -1,0 +1,536 @@
+国内镜像
+composer config  g repo.packagist composer https://packagist.phpcomposer.com
+composer self-update
+
+文档有用户表sql  http://www.yii china.com/doc/yii2 windows.html?id=176
+
+
+console执行
+/usr/bin/php yii demo/add
+php ./yii.php grasp-news/index  111 222
+
+6.26开始
+学习文档建议以此为主  http://www.yii china.com/doc/yii2 windows.html?id=35
+文中有数据库sql.  更加清晰,简洁.
+以另一个为辅   https://www.yiichina.com/doc/guide/2.0/security authentication
+本文使用主文档:
+注意:
+安装时 指定版本 .10有问题 php composer.phar create-project yiisoft/yii2-app-advanced advanced 2.0.10
+php composer.phar create-project yiisoft/yii2-app-advanced advanced 成功(会安装.14版本)
+执行init之后不会有更改需要提交  应该还是在git忽略了的  增加了本地配置文件的等
+init之后 添加host 虚拟机配置  就可以访问了 http://admin.demo.com/index.php?r=site%2Flogin
+語言包 需要创建目录 /frontend/messages/zh-CN
+添加语言包配置/frontend/config/main.php
+??? nginx 不能使用路由规则修改后缀名为html???  Apache有重写  nginx怎么做??
+邮件 成功
+'mailer' => [
+'class' => 'yii\swiftmailer\Mailer',
+'viewPath' => '@common/mail',
+'useFileTransport' => false,    //这里一定要改成false，不然邮件不会发送
+'transport' => [
+'class' => 'Swift_SmtpTransport', //使用的类
+'host' => 'smtp.qq.com', //邮箱服务一地址
+'username' => '704863481@qq.com',//邮箱地址，发送的邮箱
+'password' => '****',  //自己填写邮箱密码
+// 'password' => '***********',  //自己填写邮箱密码
+'port' => '465',  //服务器端口
+'encryption' => 'ssl', //加密方式
+],
+'messageConfig'=>[
+'charset'=>'UTF-8', //编码
+'from'=>['704863481@qq.com'=>'admin']  //邮件里面显示的邮件地址和名称
+],
+//                'class' => 'Swift_SmtpTransport',
+////                'host' => 'smtp.163.com',
+////                'username' => 'xianan_huang@163.com',
+////                'password' => '*********',        //如果是163邮箱，此处要填授权码
+//                'host' => 'smtp.qq.com',
+//                'username' => '70486',
+//                'password' => 'wcmzxuqxclgobbjj',        //如果是163邮箱，此处要填授权码
+//                // 'port' => '25',
+//                'port' => '465',
+//                'encryption' => 'tls',
+//            ],
+],
+自定义验证规则方法 还有很多游泳的验证规则  ['password', 'validatePassword'],
+http://www.yii china.com/doc/yii2 windows.html?id=9
+/**
+* Validates the password.
+* This method serves as the inline validation for password.
+*
+* @param string $attribute the attribute currently being validated
+* @param array $params the additional name-value pairs given in the rule
+*/
+public function validatePassword($attribute, $params)
+{
+if (!$this->hasErrors()) {
+$user = $this->getUser();
+if (!$user || !$user->validatePassword($this->password)) {
+$this->addError($attribute, '账号或者密码错误！');
+}
+}
+}
+redis 成功  添加composer 安装, 添加配置  直接执行成功, 不需要进入手册说的命令行执行(命令行执行失败 配置文件不存在)
+//根据主键查询：查询主键值为1的数据
+Customer::model()->findByPk(1);
+
+//根据条件查询(该方法是根据条件查询一个集合,可以是多个条件,把条件放到数组里面)
+Customer::model()->findAllByAttributes(['username'=>'admin']);
+
+返回单行
+$command = Yii::$app->db->createCommand('SELECT * FROM post WHERE id=1');
+$post = $command->queryOne();
+
+查询标量值/计算值：
+$command = Yii::$app->db->createCommand('SELECT COUNT(*) FROM post');
+$postCount = $command->queryScalar();
+
+hasone关联查询注意: ( 但是那天的项目中, 失败了,明明是在同一个命名空间下的啊)
+//此处OrdersModel在CustomerModel顶部别忘了加对应的命名空间
+
+关联查询添加条件   或者只查询指定列
+// 查询客户与他们的订单和国家
+CustomerModel::find()->with('orders', 'country')->all();
+
+// 查询客户与他们的订单和订单的发货地址（注：orders 与 address都是关联关系）
+CustomerModel::find()->with('orders.address')->all();
+
+// 查询客户与他们的国家和状态为1的订单
+CustomerModel::find()->with([
+'orders' => function ($query) {
+$query->andWhere('status = 1');
+},
+'country',
+])->all();
+where专题-- 数据增删改    http://www.yii china.com/doc/yii2 windows.html?id=282
+批量插入数据
+Yii::$app->db->createCommand()->batchInsert('user', ['name', 'age'], [
+['test01', 30],
+['test02', 20],
+['test03', 25],
+])->execute();
+根据主键删除:删除主键值为1的用户
+$result = User::deleteByPk(1);
+读写分离  'db' => [
+'class' => 'yii\db\Connection',
+
+// 配置主服务器
+'dsn' => 'mysql:host=192.168.0.1;dbname=hyii2',
+'username' => 'root',
+'password' => 'root',
+'charset' => 'utf8',
+
+// 配置从服务器
+'slaveConfig' => [
+'username' => 'root',
+'password' => 'root',
+'attributes' => [
+// use a smaller connection timeout
+PDO::ATTR_TIMEOUT => 10,
+],
+'charset' => 'utf8',
+],
+
+// 配置从服务器组
+'slaves' => [
+['dsn' => 'mysql:host=192.168.0.2;dbname=hyii2'],
+],
+],
+gridview的一些基本操作   8.自定义按钮：{view} {update} {delete} 为默认   9.修改列表顶部分页信息    5.列表中显示图片：显示一张50*100的图片，label_img为图片地址
+
+[
+'class' => 'yii\grid\ActionColumn',
+'template' => '{login} {view} {update} {examine} ',
+'buttons'=>[
+'login' => function ($url, $model, $key) {
+$url = Yii::$app->params['schoolUrl'].'/login?id='.$model->id;
+return Html::a('<span class="btn btn-info btn-sm">学校登录</span>', $url, ['title' => '查看']);
+},
+'view' => function ($url, $model, $key) {
+return Html::a('<span class="btn btn-success btn-sm">查看</span>', $url, ['title' => '查看']);
+},
+'update' => function ($url, $model, $key) {
+return Html::a('<span class="btn btn-primary btn-sm">编辑</span>', $url, ['title' => '编辑']);
+},
+'examine' => function ($url, $model, $key) {
+return $model->status == 0?Html::a('<span class="btn btn-danger btn-sm">禁用</span>', '/school/disable?id='.$model->id, ['title' => '禁用']):Html::a('<span class="btn btn-info btn-sm">启用</span>', '/school/enable?id='.$model->id, ['title' => '启用']);
+}
+]
+],
+
+<?php echo GridView::widget([
+        'dataProvider' => $dataProvider,
+'options' => ['class' => 'grid-view table-responsive'],
+'columns' => [
+// ['class' => 'yii\grid\SerialColumn'],
+
+'id',
+'behavior',
+'name',
+'port',
+'content',
+// 'status',
+[
+'attribute' => 'status',
+'label' => '状态',
+'value' => function ($model) {
+return $model->status == 1 ? '启用' : '停用';
+},
+],
+// 'createdTime:datetime',
+
+[
+'class' => 'yii\grid\ActionColumn',
+'template' => '{view}{update}',
+]
+],
+]); ?>
+
+
+自定义表单结构
+// 隐藏form的标签
+echo $form->field($model, 'demo', [
+'inputOptions' => [
+'placeholder' => $model->getAttributeLabel('demo'),
+],
+])->label(false);
+
+// 内联 radio list
+echo $form->field($model, 'demo')->inline()->radioList($items);
+
+//水平模式控制文本框的大小
+echo $form->field($model, 'demo', [
+'horizontalCssClasses' => [
+'wrapper' => 'col-sm-2',
+]
+]);
+
+// 除了'default（默认）' 布局 你还可以用 'template' 制定特定的布局:
+echo $form->field($model, 'demo', [
+'template' => '{label} <div class="row"><div class="col-sm-4">{input}{error}{hint}</div></div>'
+]);
+
+// 自定义输入框的结构
+echo $form->field($model, 'demo', [
+'inputTemplate' => '<div class="input-group"><span class="input-group-addon">@</span>{input}</div>',
+]);
+彈窗 自动消失
+<script>
+    setTimeout(function() {
+        $('#alert1').slideUp(500);
+        $('#alert12').slideUp(500);
+    }, 3000);
+</script>
+Alert::begin([
+'options' => [
+'id' => 'alert12',
+'class' => 'alert-warning',
+],
+]);
+echo '保存失败！';
+Alert::end();
+
+
+
+
+
+****在自己的...中
+
+6.26结束
+
+
+
+
+
+restful 接口：成功
+注意命名空间  有的不是app  有自己的空间
+model也是  有很多不是app下面  是common下面的空间
+
+
+PHP写在线视频直播技术详解
+https://www.cnblogs.com/zx-admin/p/5697447.html
+
+
+error_log
+$str = "这是条错误信息。\r\n";
+error_log($str, 3, 'errors.log');
+
+下面的列表总结了Yii的REST框架的HTTP状态代码:
+200: OK。一切正常。
+201: 响应 POST 请求时成功创建一个资源。Location header 包含的URL指向新创建的资源。
+204: 该请求被成功处理，响应不包含正文内容 (类似 DELETE 请求)。
+304: 资源没有被修改。可以使用缓存的版本。
+400: 错误的请求。可能通过用户方面的多种原因引起的，例如在请求体内有无效的JSON 数据，无效的操作参数，等等。
+401: 验证失败。
+403: 已经经过身份验证的用户不允许访问指定的 API 末端。
+404: 所请求的资源不存在。
+405: 不被允许的方法。 请检查 Allow header 允许的HTTP方法。
+415: 不支持的媒体类型。 所请求的内容类型或版本号是无效的。
+422: 数据验证失败 (例如，响应一个 POST 请求)。 请检查响应体内详细的错误消息。
+429: 请求过多。 由于限速请求被拒绝。
+500: 内部服务器错误。 这可能是由于内部程序错误引起的。
+
+Yii2搭建后台并实现rbac权限控制完整实例教程
+https://www.jb51.net/article/83187.htm
+
+yii2.0用户登陆 [ 2.0 版本 ]
+http://www.yiichina.com/tutorial/332
+高级版的user表结构:
+DROP TABLE IF EXISTS `user`;CREATE TABLE `user` (
+`id` int(11) NOT NULL AUTO_INCREMENT,
+`username` varchar(255) NOT NULL,
+`auth_key` varchar(32) NOT NULL,
+`password_hash` varchar(255) NOT NULL,
+`password_reset_token` varchar(255) DEFAULT NULL,
+`email` varchar(255) NOT NULL,
+`role` smallint(6) NOT NULL DEFAULT '10',
+`status` smallint(6) NOT NULL DEFAULT '10',
+`created_at` int(11) NOT NULL,
+`updated_at` int(11) NOT NULL,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
+// 和上一个相同，只是明确指定了需要对比的属性字段
+['password', 'compare', 'compareAttribute' => 'password_repeat'],
+
+// 检查年龄是否大于等于 30
+['age', 'compare', 'compareValue' => 30, 'operator' => '>='],
+
+echo("<script>console.log('yohu ');</script>");
+console_log
+但如果只是想要一个简单的，可用的，不用安装扩展程序的方式来解决这个问题，那么可以这么来做：
+function console_log($data)
+{
+if (is_array($data) || is_object($data))
+{
+echo("<script>console.log('".json_encode($data)."');</script>");
+}
+else
+{
+echo("<script>console.log('".$data."');</script>");
+}
+}
+
+YII2多数据库切换
+注意:  Yii::$app->source  Yii::$app->db  这里要选择自己的数据库连接
+$InsertRow = Yii::$app->source->createCommand()->batchInsert(BNews::tableName(), $Column, $arg)->execute(Yii::$app->source);
+$InsertRow = Yii::$app->source->createCommand()->batchInsert(BNews::tableName(), $Column, $arg)->execute();
+执行成功
+
+Yii2.0批量插入：
+Yii::$app->db->createCommand()->batchInsert(UserModel::tableName(), ['user_id','username'], [
+['1','test1'],
+['2','test2'],
+['3','test3'],
+])->execute();
+一个字段时
+//假如 $names = ['zhangsan', 'lisi'];$data = [];foreach ($names $k => $v) {
+$data[] = [$v];
+}
+Yii::$app->db->createCommand()->batchInsert('test', ['name'], $data)->execute();
+
+
+
+行为就是 把某些方法  附加到某些类中
+TimestampBehavior
+// 匿名行为，只有行为类名
+MyBehavior::className(),
+
+// 命名行为，只有行为类名
+'myBehavior2' => MyBehavior::className(),
+
+// 匿名行为，配置数组
+[
+'class' => MyBehavior::className(),
+'prop1' => 'value1',
+'prop2' => 'value2',
+],
+
+// 命名行为，配置数组
+'myBehavior4' => [
+'class' => MyBehavior::className(),
+'prop1' => 'value1',
+'prop2' => 'value2',
+]
+
+这个行为支持在 Active Record 存储时自动更新它的时间戳属性。
+注意  是 时间戳
+public function behaviors()
+{
+return [
+[
+'class' => TimestampBehavior::className(),
+'attributes' => [
+ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
+],
+// if you're using datetime instead of UNIX timestamp:
+// 'value' => new Expression('NOW()'),
+],
+];
+}
+
+比较行为与 Traits
+http://www.yiichina.com/doc/guide/2.0/concept-behaviors
+
+
+
+后3列 合并一起
+前两个不能修改  不能删除--只能改状态
+curd页面
+
+tag
+去这里找找  https://packagist.org
+https://blog.csdn.net/jartins/article/details/79692747
+3-9 Yii2框架博客系统文章创建-标签
+
+<?= $form->field($model, 'modules_name',['template'=>"<div class='col-lg-6'>{label}\n{input}\n{hint}\n{error}</div>"])->textInput() ?>
+
+<label for='loginform-username' style='margin-right:10px;line-height:2.2em;float:left;'>用户名</label>
+<?= $form->field($model, 'username')
+->label(false)
+->textInput(['style' => 'float:left;width:200px;'])
+->error(['style' => 'line-height:2.2em;']); ?>
+
+Yii 2.0权威指南 ¶
+高级应用模板 - 高级应用实例，包含了前后端页面以及数据库访问。
+安装 ¶
+http://yii2.techbrood.com/
+http://yii2.techbrood.com/guide-apps-advanced.html
+Yii2 开源电商系统 FecShop GitHub 地址：https://github.com/fancyecommerce/yii2_fecshop
+http://www.yii-china.com/doc/guide/start_install_yii.html
+
+
+Yii2 GridView的使用方法
+Yii2 GridView的使用方法
+https://segmentfault.com/a/1190000006868819
+
+https://blog.csdn.net/xmlife/article/details/51541843
+Yii2-GridView常见操作
+自定义样式
+下拉搜索
+日期格式化并实现日期可搜索
+根据参数进行是否显示
+链接可点击跳转
+显示图片
+html渲染
+自定义按钮
+设定宽度等样式
+自定义字段
+自定义行样式
+增加按钮调用js操作
+yii2 GridView 下拉搜索实现案例教程
+yii2 GridView 日期格式化并实现日期可搜索 案例
+Yii2联合查询（配合GridView）
+https://www.jianshu.com/p/13413dbe9835
+
+gl 给的方法
+中间表关联查询 ¶
+http://yii2.techbrood.com/guide-active-record.html
+
+时间插件
+另外一个
+yii2-datepicker/datetimepicker插件使用
+https://blog.csdn.net/rentingting1/article/details/46713495
+无法使用
+http://www.yiichina.com/code/923
+推荐通过Composer来安装该插件，执行下面的命令来下载插件
+composer require kartik-v/yii2-widget-datetimepicker "*"
+或者在根目录的composer.json文件中添加
+"kartik-v/yii2-widget-datetimepicker": "*"
+然后执行
+composer update
+index中属性使用
+https://blog.csdn.net/bbsli123/article/details/62428772
+[
+'attribute' => 'create_time',
+'format' => ['date', 'php:Y-m-d H:i'],
+'filter' => DateTimePicker::widget([
+'model' => $searchModel,
+'type' => DateTimePicker::TYPE_COMPONENT_APPEND,
+'attribute' => 'create_time',
+'options' => ['class' => 'input-sm'],
+'pluginOptions' => [
+'autoclose' => true,
+'format' => 'yyyy-mm-dd',
+'minView' => 'month',
+]
+]),
+Yii2 回到顶部插件
+http://www.yiichina.com/extension/1235
+安装请执行
+php composer.phar require --prefer-dist oonne/yii2-scroll-to-top "*"
+or add
+或者把以下内容添加到composer.json中
+"oonne/yii2-scroll-to-top": "*"
+to the require section of your composer.json file.
+Usage
+基础用法：
+<?= \oonne\scrollTop\ScrollTop::widget() ?>
+自定义样式：
+<?php use oonne\scrollTop\ScrollTop; ?><?= ScrollTop::widget([
+    'options' => 'custom-css class-name'
+]); ?>
+自定义内容和样式：
+<?php use oonne\scrollTop\ScrollTop; ?><?= ScrollTop::widget([
+    'tagContent' => '<i class="top-icon"></i>',
+'options' => 'custom-css class-name',
+]); ?>
+
+
+30分钟搞定yii的gridview，你可能只看这一篇就够了 （包含基本配置，下拉筛选，多选删除）
+https://www.cnblogs.com/tystudy/p/6484640.html
+https://www.cnblogs.com/benlightning/p/4536392.html
+http://school.cb.local/notice/create
+<?= $form->field($model, 'type_id')->checkboxList(ArrayHelper::map(MeType::find()->asArray()->all(),'id','name'))->label('经营类型');?>
+
+<div class="form-group">         <div class="col-lg-offset-1 col-lg-11">             <?= Html::submitButton('Login', ['class' => 'btn btn-primary']) ?>         </div>     </div> <?php ActiveForm::end() ?>
+
+
+
+
+Java加密扩展（JCE）
+
+yii2 RBAC使用DbManager实现后台权限判断的方法
+http://www.jb51.net/article/89134.htm
+
+Yii2中实用的helpler函数 [ 2.0 版本 ]
+http://www.yiichina.com/code/1612
+
+如果想更改输入框的标签及其样式，有两个方式，一个是通过labelOptions参数：
+[php] view plain copy
+<?= $form->field($model, 'username',['labelOptions' => ['label' => 'Nick name','class' => 'your own class']]) ?>
+还有一个更加面向对象的方法是：
+[php] view plain copy
+<?= $form->field($model, 'username')->textInput()->hint('Please enter your nick name instead of email')->label('Nick name') ?>
+
+placeholder
+<?php echo $form->field($model,'company_name', ['inputOptions' => ['placeholder'=>'请输入商家名称','class' => 'form-control'], 'template'=>'<label for="inputCompanyName" class="col-sm-1 control-label"><span class="text-red">*</span> 商家名称</label><div class="col-md-8">{input}</div><label class="col-sm-3" for="inputError">{error}</label>'])->textInput()?>
+
+供自己做一个记录
+ctrl + 1-9 切换1-9个标签页
+ctrl + tab 下一个标签页
+ctrl + shift + tab 上一个标签页
+ctrl + pageup 上一个标签页
+ctrl + pagedown 下一个标签页
+
+yii2使用多个数据库的案例
+https://www.cnblogs.com/wwolf/p/5389336.html
+https://blog.csdn.net/terry_water/article/details/47336091
+http://www.yii-china.com/post/detail/286.html
+
+Class 'Yii\db\Connection' not found
+数据库没有引入  或者没有配置
+
+
+
+
+
+????
+
+接口不能返回获取???
+
+
+
+
+

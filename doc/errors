@@ -1,0 +1,10 @@
+
+restful接口请求報錯， 命名空间必须与现有项目命名空间一致
+Unable to find 'api\modules\v1\controllers\UserController' in file: D:\WWW\tcampus_edu\projects/api/modules/v1/controllers/UserController.php. Namespace missing?
+
+成功
+http://tcampus_edu.cb.local/v1/user
+
+调用失败 (注释之前的URLmanager也是失败)
+http://tcampus_edu.cb.local/v1/users
+http://tcampus_edu.cb.local/v1/users/16
